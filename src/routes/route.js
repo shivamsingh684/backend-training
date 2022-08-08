@@ -5,6 +5,10 @@ const abc = require('../introduction/intro')
 const loggerModule = require('../logger/logger.js')
 const formatterModule = require('../validator/formatter') 
 const helperModule = require('../util/helper')
+const load=require('../lodash/file')
+const arrfunc=require('../lodash/file2')
+const manyarray=require('../lodash/file3')
+const pairs=require('../lodash/file4')
 const router = express.Router();
 
 router.get('/test-me', function (req, res) {
@@ -17,11 +21,28 @@ router.get('/test-me', function (req, res) {
     helperModule.getTodaysDate()
     helperModule.getCurrentMonth()
     helperModule.printBatchDetails()
+    load.lodash()
+    arrfunc.arr1()
+    manyarray.manyarr()
+    pairs.newlist()
     let weekdend = ['Saturday','Sunday','Monday']
     let result = _.first(weekdend, 2)
     console.log('Unserscore example resultr is ',result)
     res.send('My second ever api!')
 });
+router.get('/student-details/:name',function(req,res){
+    console.log("This is the request"+JSON.stringify(req.params))
+    let reqParams=req.params
+    let studentName=reqParams.name
+    console.log('Name of the student ',studentName)
+    let studentDetail=studentName+" "+studentName
+    res.send(studentDetail)
+})
+
+router.get('/cohort-members',function(req,res){
+    let student=['sdfg','dfggg','dffgg']
+    res.send(student)
+})
 
 
 router.get('/test-you', function(req, res){
