@@ -74,11 +74,57 @@ router.get("/films/:filmId",function(req,res){
     //    console.log('filmid recived',fimId)
     //    res.send('dummy response')
     })
+    router.get("/shoes",function(req,res){
+        let queryParams=req.query
+        let brand =queryParams.brand
+        res.send('dumy response')
+    })
 
 router.get('/hello', function (req, res) {
    
     res.send('Hello there!')
 });
+router.get("/sol1", function (req, res) {
+    
+    let arr= [1,2,3,5,6,7]
+   
+    let total =0;
+    for(i=0;i<arr.length;i++){
+        total=total+arr[i];
+    }
+
+    let lastdigit=arr.pop()
+    let consecutive=lastdigit * (lastdigit+1)/2
+    let missingNumber=consecutive - total
+
+console.log(missingNumber)
+
+    res.send(  { data: missingNumber  }  );
+
+ });
+    router.get("/sol2", function (req, res) {
+    //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
+    let arr= [33, 34, 35, 37, 38]
+    let len=arr.length
+    let total=0;
+    for(i=0;i<arr.length;i++){
+        total=total+arr[i]
+    }
+    let firstdigit=arr[0]
+    let lastdigit=arr.pop()
+    let consecutive=(len+1)*(firstdigit+lastdigit)/2
+
+    let missingNumber=consecutive-total
+
+	   ///LOGIC WILL GO HERE 
+  
+       res.send(  { data: missingNumber  }  );
+    });
+    
+   
+
+
+
 
 router.get('/candidates', function(req, res){
     console.log('Query paramters for this request are '+JSON.stringify(req.query))
