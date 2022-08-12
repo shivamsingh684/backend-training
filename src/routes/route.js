@@ -1,8 +1,12 @@
 const express = require('express');
 const myHelper = require('../util/helper')
 const underscore = require('underscore')
+//const UserModel=require('../models/userModel.js');
+const userModel = require('../models/userModel.js');
+const userControler=require('../controllers/userController')
 
 const router = express.Router();
+// const {default: mongoose}=require('mongoose')
 
 router.get('/test-me', function (req, res) {
     myHelper.printDate()
@@ -35,7 +39,21 @@ router.get('/candidates/:canidatesName', function(req, res){
     console.log('Candidates name is '+req.params.canidatesName)
     res.send('Done')
 })
+// mongoose.connect("mongodb+srv://rahuldhek21:18248518@cluster0.190udme.mongodb.net/shivamsingh684",
+// {
+//  useNewUrlParser:true
+// }
+// ).then( ( )=> {console.log("MongoDb is connected")})
+// .catch(err => console.log(err))
 
+//===============================================================================
+
+router.post('/createuser',userControler.createUser)
+
+
+
+
+router.get('/getUserData',userControler.getUsersData)
 
 module.exports = router;
 // adding this comment for no reason
