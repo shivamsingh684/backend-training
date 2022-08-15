@@ -46,14 +46,16 @@ router.get('/candidates/:canidatesName', function(req, res){
 // ).then( ( )=> {console.log("MongoDb is connected")})
 // .catch(err => console.log(err))
 
-//===============================================================================
+//=============================================================================== 
 
-router.post('/createuser',userControler.createUser)
+//router.post('/createuser',userControler.createUser)
+
+router.post('/createnewbook',userControler.createUser)
 
 
+//router.get('/getUserData',userControler.getUsersData)
 
-
-router.get('/getUserData',userControler.getUsersData)
+router.get('/listofbook',userControler.getUsersData)
 
 module.exports = router;
 // adding this comment for no reason
