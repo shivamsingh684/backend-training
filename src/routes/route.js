@@ -50,12 +50,12 @@ router.get('/candidates/:canidatesName', function(req, res){
 
 //router.post('/createuser',userControler.createUser)
 
-router.post('/createnewbook',userControler.createUser)
+router.post('/createbook',userControler.createUser)
 
 
 //router.get('/getUserData',userControler.getUsersData)
 
-router.get('/listofbook',userControler.getUsersData)
+router.get('/bookList',userControler.getUsersData)
 
 module.exports = router;
 // adding this comment for no reason

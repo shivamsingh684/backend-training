@@ -1,59 +1,18 @@
-//const mongoose=require('mongoose');
-// const userSchema=new mongoose.Schema({
-//     firstName:String,
-//     lastName:String,
-//     mobile:{
-//         type:String,
-//         unique:true,
-//         required:true
-//     },
-//     emailId:String,
-//     gender:{
-//         type:String,
-//         enum:["male","female","LGBTQ"]
-//     },
-//     age:Number
-// }, {timestamps:true});
-
-// module.exports=mongoose.model('User',userSchema)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const mongoose=require('mongoose');
 
 
 
-const bookSchema=new mongoose.Schema({
-    bookName:String,
+const bookcollection=new mongoose.Schema({
+    bookName:{type:String,required:true},
     authorName:String, 
-    // category:{
-    //     type:String,
-    //    enum:["comic","adventure","action","classics","historical"]
-         
-    // },
-    year:Number ,
+    totalPages:Number,
+    year:{type:Number,default:2021 },
     tags:[String],
-    date:{
-        type:Date,
-        default:Date.now
-    },
-    isPublished:Boolean,
+    stockAvailable:Boolean,
     prices:{
         indianPrice:String,
         euroPrice:String
     },
-    sales:{type:Number,default:10}
+  
 },{timestamps:true});
-module.exports=mongoose.model('User',bookSchema)                                                                              
+module.exports=mongoose.model('User',bookcollection)                                                                              
