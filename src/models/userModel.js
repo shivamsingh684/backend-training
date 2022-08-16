@@ -38,11 +38,22 @@ const mongoose=require('mongoose');
 const bookSchema=new mongoose.Schema({
     bookName:String,
     authorName:String, 
-    category:{
-        type:String,
-       enum:["comic","adventure","action","classics","historical"]
+    // category:{
+    //     type:String,
+    //    enum:["comic","adventure","action","classics","historical"]
          
+    // },
+    year:Number ,
+    tags:[String],
+    date:{
+        type:Date,
+        default:Date.now
     },
-    year:Number 
+    isPublished:Boolean,
+    prices:{
+        indianPrice:String,
+        euroPrice:String
+    },
+    sales:{type:Number,default:10}
 },{timestamps:true});
 module.exports=mongoose.model('User',bookSchema)                                                                              
