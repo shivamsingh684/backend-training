@@ -7,6 +7,9 @@ const mid = async (req, res, next) => {
     if (!token) return res.send({ status: false, msg: "token must be present" });
     let decodedToken = jwt.verify(token, "shivam singh");
     if (!decodedToken) return res.send({ status: false, msg: "token is invalid" });
+    let userId = req.params.userId;
+    let userloggedin=decodedToken.userId
+    if(userId!=userloggedin) return res.send({status:false,msg:"not a loggedin user"})  
     next()
 }
 

@@ -39,6 +39,15 @@ const getUserData = async (req, res) => {
 };
 //updateUser
 const updateUser = async (req, res) => {
+  // let token = req.headers["x-Auth-token"];
+  // if (!token) token = req.headers["x-auth-token"];
+  // if (!token) return res.send({ status: false, msg: "token must be present" });
+  // let decodedToken = jwt.verify(token, "shivam singh");
+  // if (!decodedToken) return res.send({ status: false, msg: "token is invalid" });
+
+  // let userId = req.params.userId;
+  // let userloggedin=decodedToken.userId
+  // if(userId!=userloggedin) return res.send({status:false,msg:"not a loggedin user"})
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
   if (!user) {
