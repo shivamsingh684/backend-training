@@ -21,6 +21,7 @@ mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzot
 //   }
 //   );
 
+
 app.use('/', route);
 
 
