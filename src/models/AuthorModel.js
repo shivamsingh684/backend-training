@@ -16,20 +16,11 @@ const AuthorSchema = new mongoose.Schema({
     },
     email: {
         type: String,                                           
-
         lowercase: true,
         unique: true,
-        required: true,
-
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            "Please fill a valid email address",
-        ]
+        required: true,   
     },
-
-
-
-    passward: {
+    password: {
         type: String,
         required: true
     },
@@ -39,5 +30,4 @@ const AuthorSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-module.exports = mongoose.model('Author', AuthorSchema) 
-
+module.exports = mongoose.model('Author', AuthorSchema)
