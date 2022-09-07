@@ -1,4 +1,4 @@
-const AuthorModel=require("../models/AuthorModel")
+const AuthorModel=require("../models/authorModel")
 
 const authorVlidation=async function(req,res,next){
     try {

@@ -4,6 +4,7 @@
    const ObjectId = mongoose.Schema.Types.ObjectId
    const BlogSchema = new mongoose.Schema( {
        title :String,
+       body:String,
         authorId:{
            type : ObjectId,
            ref: 'Author',
@@ -13,7 +14,7 @@
                type: [String],
            required:true},
            subcategory:[String],
-           type: String,
+          
            publishedAt: {
                type : Date    
            },

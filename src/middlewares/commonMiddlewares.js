@@ -1,26 +1,24 @@
 
-const mid1= function ( req, res, next) {
-    req.falana= "hi there. i am adding something new to the req object"
-    console.log("Hi I am a middleware named Mid1")
+const jwt=require("jsonwebtoken");
+
+//<========================================== authenticate ============================>
+const authentication = async function(req,res,next){
+    try {
+        let token=req.headers["x-api-token"]
+    if(!token) token=req.headers["X-API-TOKEN"]
+    if(!token)return res.status(404).send({status:false,msg:"token is not present"})
+    let decodedToken=jwt.verify(token,"FristProject")
+    if(!decodedToken)return res.status(401).send({status:false,msg:"token is invalid"})
+    req["decodedToken"]=decodedToken
     next()
+    } catch (error) {
+        res.status(500).send({status:false,msg:error})
+    }
 }
 
-const mid2= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid2")
-    next()
-}
+module.exports.authentication=authentication
 
-const mid3= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid3")
-    next()
-}
 
-const mid4= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid4")
-    next()
-}
+//<======================================= authorization ================================>
 
-module.exports.mid1= mid1
-module.exports.mid2= mid2
-module.exports.mid3= mid3
-module.exports.mid4= mid4
+const authorization=async function(req,res,next)
