@@ -41,10 +41,10 @@ module.exports.createAuthor = createAuthor
          res.status(200).send({status:true,data:token});
              
         }
-        //  else
-        //   {
-        //       res.status(401).send({msg:"email or password required"})
-        //   }
+         else
+          {
+              res.status(401).send({msg:"email or password required"})
+          }
       } 
          catch (error)
           {

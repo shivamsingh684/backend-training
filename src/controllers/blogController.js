@@ -31,25 +31,30 @@ const getBlog = async function (req, res) {
     try {
         let data = req.query
 
-        if (!data) { return res.status(400).send({ status: false, msg: "please provide query data" }) }
+        //if (Object.keys(data).length===0 || data.length===undefined) { return res.status(400).send({ status: false, msg: "query or query value missing" })}
+        //  let {tags}=data
+        //  tags=tags.split(",").map(x=>x)
         let query = { isDeleted: false, isPublished: true }
         if (data.authorId) query.authorId = data.authorId
         if (data.tags) query.tags =  data.tags ;
         if (data.category) query.category = data.category
         if (data.subcategory) query.subcategory = data.subcategory
+        
+       
         const getData = await blogModel.find(query);
         if (Object.keys(getData).length != 0) {
             res.status(200).send({ status: true, data: getData })
         } else {
             res.status(404).send({ status: false, msg: "document not found" })
         }
-
-
     } catch (error) {
         res.status(500).send({ msg: error })
 
     }
+   
 }
+
+
 
 module.exports.getBlog = getBlog
 

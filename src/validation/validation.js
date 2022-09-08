@@ -77,17 +77,17 @@ const mid4 = async (req, res, next) => {
     try {
         const data = req.query;
         let blog = await blogModel.find(data).select({ isDeleted: 1, _id: 0 });
-        console.log(blog)
         for (let i = 0; i < blog.length; i++) {
-            if (blog[i].isDeleted === true) return res.send("blog already deleted");
-            console.log(blog[i].isDeleted)
+        if (blog[i].isDeleted === true) return res.send("blog already deleted");
+           
         }
         next()
-    }
-    catch (error) {
+    } 
+ 
+    catch (error) { 
         res.status(500).send({ status: false, msg: error.message })
     }
-}
+} 
 
 
 module.exports.authorVlidation = authorVlidation
