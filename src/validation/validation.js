@@ -9,17 +9,18 @@ const authorVlidation = async function (req, res, next) {
         let { fname, lname, title, email, password } = data
 
         if (!fname) { return res.status(400).send({ status: false, msg: "please provide the fname" }) }
-        if (typeof data.fname !== "string") return res.status(400).send({ status: false, msg: " Please enter fname as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(fname)) return res.status(400).send({ status: false, msg: " Please enter fname as a String" });
         if (!lname) { return res.status(400).send({ status: false, msg: "please provide the lname" }) }
-        if (typeof data.lname !== "string") return res.status(400).send({ status: false, msg: " Please enter lname as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(lname)) return res.status(400).send({ status: false, msg: " Please enter lname as a String" });
         if (!title) { return res.status(400).send({ status: false, msg: "please provide the title" }) }
-        if (typeof data.title !== "string") return res.status(400).send({ status: false, msg: " Please enter title as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(title)) return res.status(400).send({ status: false, msg: " Please enter title as a String" });
 
         if (!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/).test(email)) { return res.status(400).send({ status: false, msg: "please provide valid email" }) }
 
         let author = await AuthorModel.findOne({ email: email })
         if (author) { return res.status(400).send({ status: false, msg: "this email already exists please provide another email" }) }
         if (!password) { return res.status(400).send({ status: false, msg: "please provide the password" }) }
+        if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,16})/).test(password)) { return res.status(400).send({ status: false, msg: "password should contain at least 1 lowercase, uppercase ,numeric alphabetical character and at least one special character and also The string must be eight characters or longer" }) }
         next()
 
     }
@@ -35,7 +36,7 @@ const mid2 = async (req, res, next) => {
     try {
         let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
         let data1 = req.query
-        
+
         let authorId = data1.authorId
         if (!authorId) {
             return res.status(400).send({ status: false, msg: "Enter valid Id" })
@@ -45,10 +46,10 @@ const mid2 = async (req, res, next) => {
             return res.status(401).send({ status: false, msg: "authorId is inValid" })
         }
         if (!data1) { return res.status(400).send({ status: false, msg: "please provide query data" }) }
-       
+
         if (!verify(data1.authorId)) return res.status(404).send({ status: false, msg: "authorId is not valid" })
 
-      
+
 
         next()
     }
@@ -72,19 +73,19 @@ const mid3 = async (req, res, next) => {
         res.status(500).send({ status: false, msg: error.message })
     }
 }
-const mid4 = async (req, res, next) => { 
+const mid4 = async (req, res, next) => {
     try {
         const data = req.query;
         let blog = await blogModel.find(data).select({ isDeleted: 1, _id: 0 });
         console.log(blog)
-        for(let i=0;i<blog.length;i++){
-        if (blog[i].isDeleted === true) return res.send("blog already deleted");
-        console.log(blog[i].isDeleted)
+        for (let i = 0; i < blog.length; i++) {
+            if (blog[i].isDeleted === true) return res.send("blog already deleted");
+            console.log(blog[i].isDeleted)
         }
         next()
     }
     catch (error) {
-       res.status(500).send({ status: false, msg: error.message })
+        res.status(500).send({ status: false, msg: error.message })
     }
 }
 
