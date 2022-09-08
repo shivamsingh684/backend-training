@@ -72,17 +72,19 @@ const mid3 = async (req, res, next) => {
         res.status(500).send({ status: false, msg: error.message })
     }
 }
-const mid4 = async (req, res, next) => {
+const mid4 = async (req, res, next) => { 
     try {
         const data = req.query;
-        let blog = await blogModel.findOne(data).select({ isDeleted: 1, _id: 0 });
+        let blog = await blogModel.find(data).select({ isDeleted: 1, _id: 0 });
         console.log(blog)
-        if (blog.isDeleted === true) return res.send("blog already deleted");
-
+        for(let i=0;i<blog.length;i++){
+        if (blog[i].isDeleted === true) return res.send("blog already deleted");
+        console.log(blog[i].isDeleted)
+        }
         next()
     }
     catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+       res.status(500).send({ status: false, msg: error.message })
     }
 }
 
@@ -93,4 +95,4 @@ module.exports.mid2 = mid2
 
 module.exports.mid3 = mid3
 
-module.exports.mid4 = mid4
+module.exports.mid4 = mid4 
