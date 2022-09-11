@@ -10,24 +10,23 @@ const authorVlidation = async function (req, res, next) {
         let { fname, lname, title, email, password } = data
 
         if (!fname) { return res.status(400).send({ status: false, msg: "please provide the fname" }) }
-        if (typeof data.fname !== "string") return res.status(400).send({ status: false, msg: " Please enter fname as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(fname)) return res.status(400).send({ status: false, msg: " Please enter fname as a String" });
         if (!lname) { return res.status(400).send({ status: false, msg: "please provide the lname" }) }
-        if (typeof data.lname !== "string") return res.status(400).send({ status: false, msg: " Please enter lname as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(lname)) return res.status(400).send({ status: false, msg: " Please enter lname as a String" });
         if (!title) { return res.status(400).send({ status: false, msg: "please provide the title" }) }
-        if (typeof data.title !== "string") return res.status(400).send({ status: false, msg: " Please enter title as a String" });
+        if (!(/^[a-zA-Z ]{2,30}$/).test(title)) return res.status(400).send({ status: false, msg: " Please enter title as a String" });
 
         if (!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/).test(email)) { return res.status(400).send({ status: false, msg: "please provide valid email" }) }
 
         let author = await AuthorModel.findOne({ email: email })
         if (author) { return res.status(400).send({ status: false, msg: "this email already exists please provide another email" }) }
         if (!password) { return res.status(400).send({ status: false, msg: "please provide the password" }) }
-        
         function checkPassword(str)
         {
             var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
             return re.test(str);
         }
-        if(!checkPassword(password)) { return res.status(400).send({ status: false, msg: "password should contain at least 1 lowercase, uppercase ,numeric alphabetical character and at least one special character and also The string must be eight characters or longer" }) }       
+        if(!checkPassword(password)) { return res.status(400).send({ status: false, msg: "password should contain at least 1 lowercase, uppercase ,numeric alphabetical character and at least one special character and also The string must be eight characters or longer" }) }        if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,16})/).test(password)) { return res.status(400).send({ status: false, msg: "password should contain at least 1 lowercase, uppercase ,numeric alphabetical character and at least one special character and also The string must be eight characters or longer" }) }
         next()
 
     }
@@ -37,37 +36,25 @@ const authorVlidation = async function (req, res, next) {
     }
 
 }
+//<=======================================updateValidation ===============================>
 
-//<==================================== mid 2 =========================================>
 const updateValidation=async function(req,res,next){
-try {
+    try {
+            
+        const blogId = req.params.blogId
+        let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
+        if (!blogId) return res.status(400).send({ status: false, msg: "please provide blogId" })
+        if (!verify(blogId)) res.status(400).send({ status: false, msg: "blogId is invalid" })
         
-    const blogId = req.params.blogId
-    let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
-    if (!blogId) return res.status(400).send({ status: false, msg: "please provide blogId" })
-    if (!verify(blogId)) res.status(400).send({ status: false, msg: "blogId is invalid" })
-    
-    let blog = await blogModel.findById(blogId).select({ isDeleted: 1, _id: 0 });
-    if (blog.isDeleted == true) return res.send("blog already deleted");
-    next()
+        let blog = await blogModel.findById(blogId).select({ isDeleted: 1, _id: 0 });
+        if (blog.isDeleted == true) return res.send("blog already deleted");
+        next()
+    }
+    catch (error) {
+        res.status(500).send({ status: false, msg: error.message })
+    }
 }
-catch (error) {
-    res.status(500).send({ status: false, msg: error.message })
-}
-
-}
-module.exports.updateValidation=updateValidation
-        
-
-
-      
-       
-       
-       
-
-      
-
- 
+ module.exports.updateValidation=updateValidation
 
 //<====================================== mid3 ==========================================>
 const mid3 = async (req, res, next) => {
@@ -86,6 +73,22 @@ const mid3 = async (req, res, next) => {
         res.status(500).send({ status: false, msg: error.message })
     }
 }
+//<=============================================
+// const mid4 = async (req, res, next) => {
+//     try {
+//         const data = req.query;
+//         let blog = await blogModel.find(data).select({ isDeleted: 1, _id: 0 });
+//         console.log(blog)
+//         for (let i = 0; i < blog.length; i++) {
+//             if (blog[i].isDeleted === true) return res.send("blog already deleted");
+//             console.log(blog[i].isDeleted)
+//         }
+//         next()
+//     }
+//     catch (error) {
+//         res.status(500).send({ status: false, msg: error.message })
+//     }
+// }
 
 //<============================================ deleteByQuery ============================>
 
@@ -152,6 +155,7 @@ const delByQeury = async function( req, res,next){
       res.status(500).send({catch:1,msg:err})
        }
 }
+module.exports.delByQeury=delByQeury
 //<=============================================== complete ==============================>
 
   
@@ -159,8 +163,7 @@ const delByQeury = async function( req, res,next){
 
 module.exports.authorVlidation = authorVlidation
 
-// module.exports.mid2 = mid2
 
-module.exports.mid3 = mid3
 
-module.exports.delByQeury = delByQeury 
+module.exports.mid3=mid3
+

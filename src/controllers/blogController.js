@@ -77,7 +77,7 @@ module.exports.getBlog = getBlog
 const updateBlog = async function (req, res) {
     try {
         let blogId = req.params.blogId
-        let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
+       // let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
 
         let data = req.body
         let { title, body, subcategory, tags } = data
