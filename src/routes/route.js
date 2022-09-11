@@ -17,15 +17,17 @@ router.post("/authors",authorValid.authorVlidation,AuthorController.createAuthor
 
 router.post("/blogs",auth.authentication,BlogController.createblog)
 
-router.get("/getblogs",authorValid.mid2,auth.authentication,BlogController.getBlog)
+router.get("/getblogs",auth.authentication,BlogController.getBlog)
 
-router.put("/update/:blogId",authorValid.mid3,auth.authentication,auth.authorization,BlogController.updateBlog) 
+router.put("/blogs/:blogId",authorValid.updateValidation,auth.authentication,auth.authorization,BlogController.updateBlog) 
 
 router.delete("/deleteBlogs/:blogId",authorValid.mid3,auth.authentication,auth.authorization,BlogController.deletedBlog)
 
-router.delete("/deleteBlogsByQuery",authorValid.mid4,auth.authentication,auth.authorization,BlogController.deleteByQuery)
+router.delete("/blogs",authorValid.delByQeury,auth.authentication,BlogController.deleteByQuery)
 
-router.post("/authorlogin",AuthorController.authorLogin)
+router.post("/login",AuthorController.authorLogin)
+
+router.get("/delete",authorValid.delByQeury)
 
 
 

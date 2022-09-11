@@ -3,23 +3,30 @@ const blogModel = require("../models/BlogModel")
 const AuthorModel = require("../models/authorModel")
 const { default: mongoose } = require("mongoose")
 
+
+
 let verify = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId)
 }
-///<======================================== start =======================================>
+///<======================================== start  create blog =======================================>
 
 const createblog = async function (req, res) {
     try {
         let data = req.body
         let authorId = data.authorId
+        if(!authorId){return res.status(400).send({status:false,msg:"please provide authorId"})}
+        if(!verify(authorId)){return res.status(400).send({status:false,msg:"authorId is invalid"})}
+       // if(!Object.keys(data.category).length==0){return res.status(400).send({status:false,msg:"please provide category"})}
+        if(!data.body){return res.status(400).send({status:false,msg:"please provide body"})}
+        if(!data.title){return res.status(400).send({status:false,msg:"please provide title"})}
         let findId = await AuthorModel.findById(authorId)
         if (!findId) return res.status(404).send({ status: false, msg: "this authorId not exist" })
         let savedData = await blogModel.create(data)
-        res.status(201).send({ msg: savedData })
+       return res.status(201).send({ msg: savedData })
 
     }
     catch (err) {
-       res.status(500).send({ msg: err.message })
+      return res.status(500).send({ msg: err.message })
     }
 }
 
@@ -30,23 +37,35 @@ module.exports.createblog = createblog
 const getBlog = async function (req, res) {
     try {
         let data = req.query
-
-        if (!data) { return res.status(400).send({ status: false, msg: "please provide query data" }) }
+        let {tags,category,subcategory,authorId}=data
+        
+        if(tags)  tags=tags.split(",").map(x=>x)
+        if(category)  category=category.split(",").map(x=>x)
+        if(subcategory)  subcategory=subcategory.split(",").map(x=>x)
+   
+      if(data.hasOwnProperty("tags")&& !tags){ return res.status(400).send({ status: false, msg: "please provide tags data" }) }
+      if(data.hasOwnProperty("category")&& !category){ return res.status(400).send({ status: false, msg: "please provide category data" }) }
+      if(data.hasOwnProperty("subcategory")&& !subcategory){ return res.status(400).send({ status: false, msg: "please provide subcategory data" }) }
+      if(data.hasOwnProperty("authorId")&& !authorId){ return res.status(400).send({ status: false, msg: "please provide authorId data" }) }
+      if(authorId){
+        if(!verify(authorId)){return res.status(400).send({status:false,msg:"authorId is invalid"})}
+      }
+       
         let query = { isDeleted: false, isPublished: true }
-        if (data.authorId) query.authorId = data.authorId
-        if (data.tags) query.tags =  data.tags ;
-        if (data.category) query.category = data.category
-        if (data.subcategory) query.subcategory = data.subcategory
+        if (authorId) query.authorId =authorId
+        if(tags) query.tags={$all:tags}
+        if(category) query.category={$all:category}
+        if(subcategory) query.subcategory={$all:subcategory}
+        
         const getData = await blogModel.find(query);
         if (Object.keys(getData).length != 0) {
-            res.status(200).send({ status: true, data: getData })
+            return res.status(200).send({ status: true, data: getData })
         } else {
-            res.status(404).send({ status: false, msg: "document not found" })
+           return res.status(404).send({ status: false, msg: "document not found" })
         }
 
-
     } catch (error) {
-        res.status(500).send({ msg: error })
+        res.status(500).send({status:false, msg: error })
 
     }
 }
@@ -58,14 +77,16 @@ module.exports.getBlog = getBlog
 const updateBlog = async function (req, res) {
     try {
         let blogId = req.params.blogId
+        let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
 
         let data = req.body
         let { title, body, subcategory, tags } = data
-
+        
+        
         const blogUpdate = await blogModel.findOneAndUpdate({ _id: blogId }, {
             $set: { title, body, isPublished: true, publishedAt: new Date() },
             $push: { tags, subcategory }
-        }, { new: true, upsert: true })
+        }, {  upsert: true,new: true })
 
         res.status(200).send({ status: true, data: blogUpdate })
 
@@ -83,8 +104,7 @@ const deletedBlog = async function (req, res) {
     try {
        
         const blogId = req.params.blogId
-        //const checkId = await blogModel.findById(blogId).select({ isDeleted: 1, _id: 0 })
-        //console.log(checkId)
+       
         const update = await blogModel.findOneAndUpdate({ _id: blogId}, { $set: { isDeleted: true } }, { new: true })
         res.status(200).send({ status: true, data: update })
 
@@ -92,7 +112,7 @@ const deletedBlog = async function (req, res) {
 
     catch (err) 
     {
-        res.status(500).send({ msg: err })
+        res.status(500).send({status:false, msg: err })
     }
 }
 module.exports.deletedBlog = deletedBlog
@@ -101,16 +121,16 @@ module.exports.deletedBlog = deletedBlog
 
 const deleteByQuery = async function (req, res) {
     try {
+        
         const data = req.query;
+      
+        const upodsate= await blogModel.updateMany(data,{isDeleted:true,deletedAt:new Date()})
+       
 
-        if (!data) { return res.status(400).send({ status: false, msg: "please provide data" }) }
-        if (Object.keys(data).length == 0) return res.status(400).send({ msg: "please provide query" })
-        const deleteData = await blogModel.updateMany(data, { $set: { isDeleted: true } }, { new: true })
-        res.status(200).send({ status: true, data: deleteData })
-        if (!deleteData) return res.status(404).send({ status: false, msg: "document not exist" })
+        return res.status(200).send({status:true,msg:upodsate})
 
     } catch (error) {
-        res.status(500).send({ msg: error })
+        res.status(500).send({catch:2, msg: error })
    }
 }
 module.exports.deleteByQuery = deleteByQuery

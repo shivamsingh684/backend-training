@@ -3,8 +3,11 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId
 const BlogSchema = new mongoose.Schema({
-    title: String,
-    body: String,
+    title: {type:String,
+        required:true
+    },
+    body:{type: String,
+        required:true},
     authorId: {
         type: ObjectId,
         ref: 'Author',
