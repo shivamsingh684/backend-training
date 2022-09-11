@@ -16,9 +16,10 @@ const createblog = async function (req, res) {
         let authorId = data.authorId
         if(!authorId){return res.status(400).send({status:false,msg:"please provide authorId"})}
         if(!verify(authorId)){return res.status(400).send({status:false,msg:"authorId is invalid"})}
-       // if(!Object.keys(data.category).length==0){return res.status(400).send({status:false,msg:"please provide category"})}
+        
         if(!data.body){return res.status(400).send({status:false,msg:"please provide body"})}
         if(!data.title){return res.status(400).send({status:false,msg:"please provide title"})}
+        if(data.category=="" || data.category ==[]){return res.status(400).send({status:false,msg:"please provide category"})}
         let findId = await AuthorModel.findById(authorId)
         if (!findId) return res.status(404).send({ status: false, msg: "this authorId not exist" })
         let savedData = await blogModel.create(data)
@@ -77,11 +78,9 @@ module.exports.getBlog = getBlog
 const updateBlog = async function (req, res) {
     try {
         let blogId = req.params.blogId
-       // let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
-
+        
         let data = req.body
         let { title, body, subcategory, tags } = data
-        
         
         const blogUpdate = await blogModel.findOneAndUpdate({ _id: blogId }, {
             $set: { title, body, isPublished: true, publishedAt: new Date() },
@@ -126,11 +125,10 @@ const deleteByQuery = async function (req, res) {
       
         const upodsate= await blogModel.updateMany(data,{isDeleted:true,deletedAt:new Date()})
        
-
         return res.status(200).send({status:true,msg:upodsate})
 
     } catch (error) {
-        res.status(500).send({catch:2, msg: error })
+      return  res.status(500).send({catch:2, msg: error })
    }
 }
 module.exports.deleteByQuery = deleteByQuery

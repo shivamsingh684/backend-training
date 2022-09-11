@@ -47,7 +47,7 @@ const updateValidation=async function(req,res,next){
         if (!verify(blogId)) res.status(400).send({ status: false, msg: "blogId is invalid" })
         
         let blog = await blogModel.findById(blogId).select({ isDeleted: 1, _id: 0 });
-        if (blog.isDeleted == true) return res.send("blog already deleted");
+        if (blog.isDeleted == true) return res.status(404).send("blog already deleted");
         next()
     }
     catch (error) {
@@ -56,39 +56,6 @@ const updateValidation=async function(req,res,next){
 }
  module.exports.updateValidation=updateValidation
 
-//<====================================== mid3 ==========================================>
-const mid3 = async (req, res, next) => {
-    try {
-         
-        const blogId = req.params.blogId
-        let verify = function (ObjectId) { return mongoose.Types.ObjectId.isValid(ObjectId) }
-        if (!blogId) return res.status(400).send({ status: false, msg: "please provide blogId" })
-        if (!verify(blogId)) res.status(400).send({ status: false, msg: "blogId is invalid" })
-        
-        let blog = await blogModel.findById(blogId).select({ isDeleted: 1, _id: 0 });
-        if (blog.isDeleted == true) return res.send("blog already deleted");
-        next()
-    }
-    catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
-    }
-}
-//<=============================================
-// const mid4 = async (req, res, next) => {
-//     try {
-//         const data = req.query;
-//         let blog = await blogModel.find(data).select({ isDeleted: 1, _id: 0 });
-//         console.log(blog)
-//         for (let i = 0; i < blog.length; i++) {
-//             if (blog[i].isDeleted === true) return res.send("blog already deleted");
-//             console.log(blog[i].isDeleted)
-//         }
-//         next()
-//     }
-//     catch (error) {
-//         res.status(500).send({ status: false, msg: error.message })
-//     }
-// }
 
 //<============================================ deleteByQuery ============================>
 
@@ -98,12 +65,12 @@ const delByQeury = async function( req, res,next){
 
         const token=req.headers["x-api-key"]
     let data = req.query
-    let {tags,category,subcategory,authorId}=data 
+    let {tags,category,subcategory,authorId,isPublished}=data 
     if(tags)  tags=tags.split(",").map(x=>x)
     if(category)  category=category.split(",").map(x=>x)
     if(subcategory)  subcategory=subcategory.split(",").map(x=>x)
 
-    if(Object.keys(data).length==0) return res.send({status:false, msg:"please provide query"})
+    if(Object.keys(data).length==0) return res.status(400).send({status:false, msg:"please provide query"})
     const decodedToken=jwt.verify(token,"FirstProject")
     const authorIdFrom= decodedToken.authorId
    
@@ -113,14 +80,18 @@ const delByQeury = async function( req, res,next){
     if(data.hasOwnProperty("category")&& !category){ return res.status(400).send({ status: false, msg: "please provide category data" }) }
     if(data.hasOwnProperty("subcategory")&& !subcategory){ return res.status(400).send({ status: false, msg: "please provide subcategory data" }) }
     if(data.hasOwnProperty("authorId")&& !authorId){ return res.status(400).send({ status: false, msg: "please provide authorId data" }) }
+    if(data.hasOwnProperty("isPublished")&& !isPublished){ return res.status(400).send({ status: false, msg: "please provide isPublished data" }) }
     if(tags) query.tags = {$all:tags}
     if(category) query.category = {$all:category}
     if(authorId) query.authorId =authorId
+    
     if (subcategory) query.subcategory = { $all:subcategory }
-    if(!(Object.keys(query).length)>0){ return res.send({msg:"please provide query"})}
-    let allData = await blogModel.find(query).select({authorId:1,_id:0,isDeleted:1})
+    if(!(Object.keys(query).length)>0){ return res.status(400).send({msg:"please provide query"})}
+    let allData = await blogModel.find(query).select({authorId:1,_id:0,isDeleted:1,isPublished:1})
     console.log(allData)
-   
+    if(allData.isPublished==false){
+    if(isPublished) query.isPublished=isPublished
+   }
    
     if(allData.length>0){
         let con=0
@@ -134,12 +105,12 @@ const delByQeury = async function( req, res,next){
         
         }
         if(con==allData.length){
-            return res.status(400).send({msg:"your data is already Deleted"})
+            return res.status(204).send({msg:"your data is already Deleted"})
         }
       }}
     
     
-    if(allData.length==0){return res.send({Msg:"ducument is not exist"})}
+    if(allData.length==0){return res.status(404).send({Msg:"ducument is not exist"})}
     allData=allData.filter(x=>x.authorId.toString()==authorIdFrom)
     
      if(allData.length==0){
@@ -165,5 +136,13 @@ module.exports.authorVlidation = authorVlidation
 
 
 
-module.exports.mid3=mid3
 
+
+
+
+
+
+
+
+
+//<=========================== we are Indian ============================================>

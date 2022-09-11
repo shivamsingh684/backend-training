@@ -28,10 +28,10 @@ const authorization= async function(req,res,next){
        
         let blogId = req.params.blogId;
         let authorId1=await BlogModel.findById({_id:blogId})
-        let authorId=authorId1.authorId
-       
+        let authorId=authorId1.authorId.toString()
+      
         let userloggedin=decodedToken.authorId
-       
+       console.log()
         if(authorId!==userloggedin) return res.send({status:false,msg:"not a loggedin author"})  
         next()
     }
