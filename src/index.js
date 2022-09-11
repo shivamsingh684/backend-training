@@ -17,6 +17,13 @@ mongoose.connect("mongodb+srv://harshita1:HV8WXEqwmkGdfP0o@harshita.c31chtf.mong
 
 app.use('/', route);
 
+//<=============== path params id checking ===================================>
+// app.use(function (req, res, next){
+//     var err=new Error("not found");
+//     err.status=404;
+//     //next(err)
+//     return res.send({status:404,msg:"path not found"})
+// })
 
 
 app.listen(process.env.PORT || 3000, function () {
