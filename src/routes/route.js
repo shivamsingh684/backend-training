@@ -15,6 +15,8 @@ router.get("/test-me", function (req, res) {
 
 router.post("/authors",authorValid.authorVlidation,AuthorController.createAuthor)
 
+router.post("/login",AuthorController.authorLogin)
+
 router.post("/blogs",auth.authentication,BlogController.createblog)
 
 router.get("/getblogs",auth.authentication,BlogController.getBlog)
@@ -25,8 +27,8 @@ router.delete("/deleteBlogs/:blogId",authorValid.updateValidation,auth.authentic
 
 router.delete("/blogs",authorValid.delByQeury,auth.authentication,BlogController.deleteByQuery)
 
-router.post("/login",AuthorController.authorLogin)
 
+ 
 router.get("/delete",authorValid.delByQeury)
 
 
